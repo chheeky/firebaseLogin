@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
 
+    private String email;
+    private String password;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +42,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
         buttonLogin.setOnClickListener(this);
+
+        textEmail = (EditText) findViewById(R.id.textEmail);
+        textPassword = (EditText) findViewById(R.id.textPassword);
+
+        mAuth = FirebaseAuth.getInstance();
     }
 
 
@@ -48,14 +58,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.buttonLogin:
                 login();
+                break;
         }
 
     }
 
     private void login() {
 
-        String email = textEmail.getText().toString().trim();
-        String password = textPassword.getText().toString().trim();
+        email = textEmail.getText().toString().trim();
+        password = textPassword.getText().toString().trim();
 
         if (email.isEmpty()){
             textEmail.setError("Email address is required!");
@@ -79,13 +90,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    //Redirect to user profile
+                    startActivity(new Intent(MainActivity.this, profile.class));
                 }
                 else{
                     Toast.makeText(MainActivity.this, "Incorrect credentials!", Toast.LENGTH_LONG).show();
                 }
             }
         });
-
     }
 }
